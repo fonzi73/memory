@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+/* global NaN */
+
 var pfad = "bilder/";
 
 var image = [
@@ -23,32 +25,57 @@ function test() {
 
     }
 }
+var flag = false;
 
-function ueberpruefeGroesse(feld){
-    if (feld.value < 3){
+function ueberpruefeGroesse(feld) {
+    if(feld.value < 3) {
         alert("Bitte geben sie einen Wert größer als 2 ein!");
     }
 }
-function berechne(){
+
+function berechne() {
     var feld_a = document.getElementById("breite").value;
     var feld_b = document.getElementById("hoehe").value;
     var ergebnis = feld_a * feld_b;
-    if (ergebnis > 64){
+    if (ergebnis > 64) {
         alert("Es dürfen Max. 64 Spielfelder erzeugt werden!")
     }
     document.getElementById("anzahl").value = ergebnis;
 }
 
-function modulo(){
+function modulo() {
     var feld_a = document.getElementById("breite").value;
     var feld_b = document.getElementById("hoehe").value;
-    if (feld_a % 2 == 1 && feld_b % 2 == 1){
+    if (feld_a % 2 == 1 && feld_b % 2 == 1) {
         alert("Breite und Höhe dürfen nicht beide ungerade Werte haben!");
     }
 }
 
-function spielBedingung(obj){
+function spielBedingung(obj) {
     ueberpruefeGroesse(obj);
     modulo();
     berechne();
 }
+
+function entscheide1(obj){
+    if(flag === false){
+        spielBedingung(obj);
+        !entscheide2();
+        flag = true;
+    } else {
+        flag = false;
+        entscheide2(obj);
+    }
+}
+
+function entscheide2(obj){
+    if(flag === true){
+        spielBedingung(obj);
+        !entscheide1();
+        flag = false;
+    } else {
+        flag = true;
+        entscheide1(obj);
+    }
+}
+
