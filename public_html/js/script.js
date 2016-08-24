@@ -1,81 +1,67 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+var i;
+var spielfeldBreite;
+var spielfeldHoehe;
+var spielfeldFlaeche;
+var spielkartenGesamt = [];
+var spielkartenRunde = [];
 
-/* global NaN */
-
-var pfad = "bilder/";
-
-var image = [
-    "Bild1.jpg",
-    "Bild2.jpg",
-    "Bild3.jpg"
-];
-
-//var pfadImage = pfad + image;
-
-var i = 0;
-
-function test() {
-    for (i = 0; i < image.length; i++) {
-        var pfadImage = pfad + image[i];
-        document.getElementById("Karten" + i).src = pfadImage;
-
-    }
-}
-var flag = false;
-
-function ueberpruefeGroesse(feld) {
-    if(feld.value < 3) {
-        alert("Bitte geben sie einen Wert größer als 2 ein!");
-    }
+function berechneSpielfeldFlaeche() {
+    spielfeldBreite = document.getElementById("spielfeldBreite").value;
+    spielfeldHoehe = document.getElementById("spielfeldHoehe").value;
+    spielfeldFlaeche = spielfeldBreite * spielfeldHoehe;
+    document.getElementById("spielfeldFlaeche").value = spielfeldFlaeche;
 }
 
-function berechne() {
-    var feld_a = document.getElementById("breite").value;
-    var feld_b = document.getElementById("hoehe").value;
-    var ergebnis = feld_a * feld_b;
-    if (ergebnis > 64) {
-        alert("Es dürfen Max. 64 Spielfelder erzeugt werden!")
-    }
-    document.getElementById("anzahl").value = ergebnis;
-}
-
-function modulo() {
-    var feld_a = document.getElementById("breite").value;
-    var feld_b = document.getElementById("hoehe").value;
-    if (feld_a % 2 == 1 && feld_b % 2 == 1) {
-        alert("Breite und Höhe dürfen nicht beide ungerade Werte haben!");
-    }
-}
-
-function spielBedingung(obj) {
-    ueberpruefeGroesse(obj);
-    modulo();
-    berechne();
-}
-
-function entscheide1(obj){
-    if(flag === false){
-        spielBedingung(obj);
-        !entscheide2();
-        flag = true;
+function spielkonfigurationLaden() {
+    berechneSpielfeldFlaeche();
+    if ((spielfeldBreite % 2 === 1 && spielfeldHoehe % 2 === 1) && spielfeldFlaeche > 64) {
+        eingabeLoeschen();
+        alert("Breite und Höhe dürfen nicht beide ungerade sein! \n \n Es dürfen max. 64 Spielfelder erzeugt werden!");
+    } else if (spielfeldBreite % 2 === 1 && spielfeldHoehe % 2 === 1) {
+        eingabeLoeschen();
+        alert("Breite und Höhe dürfen nicht beide ungerade sein!");
+    } else if (spielfeldFlaeche > 64) {
+        eingabeLoeschen();
+        alert("Es dürfen max. 64 Spielfelder erzeugt werden!");
     } else {
-        flag = false;
-        entscheide2(obj);
+        for (i = 0; i < 32; i++) {
+            spielkartenGesamt[i] = "./bilder/Bild" + i + ".jpg";
+        }
+        document.getElementById("startButton").onclick = spielfeldErstellen;
+        document.getElementById("spielfeldBreite").oninput = eingabeLoeschen;
+        document.getElementById("spielfeldHoehe").oninput = eingabeLoeschen;
     }
 }
 
-function entscheide2(obj){
-    if(flag === true){
-        spielBedingung(obj);
-        !entscheide1();
-        flag = false;
-    } else {
-        flag = true;
-        entscheide1(obj);
+function spielkartenErstellen() {
+    spielkartenGesamt.sort(function () {
+        return 0.5 - Math.random();
+    });
+    for (i = 0; i < (spielfeldFlaeche / 2); i++) {
+        spielkartenRunde[i] = spielkartenGesamt[i];
+        spielkartenRunde[spielfeldFlaeche / 2 + i] = spielkartenGesamt[i];
     }
+    spielkartenRunde.sort(function () {
+        return 0.5 - Math.random();
+    });
+//    document.getElementById("spielfeld").innerHTML = spielkartenRunde;
+//    alert("Breite: " + spielfeldBreite + "\n Höhe: " + spielfeldHoehe + "\n Spielfelder: " + spielfeldFlaeche);
 }
 
+function eingabeLoeschen() {
+    spielfeldBreite = 0;
+    spielfeldHoehe = 0;
+    spielfeldFlaeche = 0;
+    document.getElementById("startButton").onclick = "";
+}
+
+function spielfeldErstellen() {
+    spielkartenErstellen();
+    var begin = '<div id="container" style="width: ' + (spielfeldBreite * 100 + 2) + 'px; height: ' + (spielfeldHoehe * 100) + 'px">';
+    var end = '</div>';
+    var output = '';
+    for (i = 0; i < spielkartenRunde.length; i++) {
+        output += '<div class="Karten0" style="background: url(' + spielkartenRunde[i] + '); background-size: 80px 80px"></div>';
+    }
+    document.getElementById('spielfeld').innerHTML = begin + output + end;
+}
