@@ -77,7 +77,8 @@ form {
 }
 
 div#container > div{
-        background: url(../bilder/BildHintergrund.jpg) no-repeat;
+        position: relative;
+        /*background: url(../bilder/BildHintergrund.jpg) no-repeat;*/
 	background-size: 80px 80px;
 	border-style: solid;
         border-color: cadetblue;
@@ -87,4 +88,19 @@ div#container > div{
 	cursor:pointer;
 }
 
+/*.vertical.flip-container {
+	position: relative;
+}*/
 
+	.back {
+		transform: rotateX(180deg);
+                background: url(../bilder/BildHintergrund.jpg) no-repeat;
+	}
+
+	.flipper {
+		transform-origin: 100% 213.5px; /* half of height */
+	}
+
+	.container:hover .flipper {
+		transform: rotateX(-180deg);
+	}
