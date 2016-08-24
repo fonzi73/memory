@@ -25,7 +25,7 @@ function spielkonfigurationLaden() {
         alert("Es dürfen max. 64 Spielfelder erzeugt werden!");
     } else {
         for (i = 0; i < 32; i++) {
-            spielkartenGesamt[i] = "bilder/Bild" + i + ".jpg";
+            spielkartenGesamt[i] = "./bilder/Bild" + i + ".jpg";
         }
         document.getElementById("startButton").onclick = spielfeldErstellen;
         document.getElementById("spielfeldBreite").oninput = eingabeLoeschen;
@@ -59,9 +59,9 @@ function spielfeldErstellen() {
     spielkartenErstellen();
     var begin = '<div id="container" style="width: ' + (spielfeldBreite * 100 + 2) + 'px; height: ' + (spielfeldHoehe * 100) + 'px">';
     var end = '</div>';
-    var output = '<div class="Karten0"></div>';
-    for (i = 0; i < spielkartenRunde.length - 1; i++) {
-        output += '<div class="Karten0"></div>';
+    var output = '';
+    for (i = 0; i < spielkartenRunde.length; i++) {
+        output += '<div class="Karten0" style="background: url(' + spielkartenRunde[i] + '); background-size: 80px 80px"></div>';
     }
     document.getElementById('spielfeld').innerHTML = begin + output + end;
 }
