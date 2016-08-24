@@ -1,4 +1,9 @@
 var i;
+var gewaehlteKarten = 0;
+var karte1;
+var karte2;
+var kartenId1;
+var kartenId2;
 var spielfeldBreite;
 var spielfeldHoehe;
 var spielfeldFlaeche;
@@ -61,7 +66,64 @@ function spielfeldErstellen() {
     var end = '</div>';
     var output = '';
     for (i = 0; i < spielkartenRunde.length; i++) {
-        output += '<div class="Karten0" style="background: url(' + spielkartenRunde[i] + '); background-size: 80px 80px"></div>';
+        output += '<div id="karte' + i + '" class="Karten0" style="background: url(' + spielkartenRunde[i] + '); background-size: 80px 80px"></div>';
     }
     document.getElementById('spielfeld').innerHTML = begin + output + end;
+    window.setTimeout(alleSpielkartenVerdecken, spielkartenRunde.length * 100);
+}
+
+function alleSpielkartenVerdecken() {
+    for (i = 0; i < spielfeldFlaeche; i++) {
+        document.getElementById('karte' + i).style.background = "url('./bilder/BildHintergrund.jpg')";
+        document.getElementById('karte' + i).style.backgroundSize = "80px 80px";
+        document.getElementById('karte' + i).onclick = function () {
+            DoSomething(this);
+        };
+    }
+}
+
+function falscheSpielkartenVerdecken() {
+    document.getElementById(kartenId1).style.background = "url('./bilder/BildHintergrund.jpg')";
+    document.getElementById(kartenId1).style.backgroundSize = "80px 80px";
+    document.getElementById(kartenId2).style.background = "url('./bilder/BildHintergrund.jpg')";
+    document.getElementById(kartenId2).style.backgroundSize = "80px 80px";
+    for (i = 0; i < spielfeldFlaeche; i++) {
+        document.getElementById('karte' + i).onclick = function () {
+            DoSomething(this);
+        };
+    }
+}
+
+function DoSomething(obj) {
+    karteWaehlen(obj);
+}
+
+function karteWaehlen(obj) {
+    var id = obj.id;
+    var newId = id.slice(5);
+    if (gewaehlteKarten === 0) {
+        kartenId1 = id;
+        karte1 = spielkartenRunde[newId];
+        gewaehlteKarten += 1;
+        document.getElementById(obj.id).style.background = "url('" + spielkartenRunde[newId] + "')";
+        document.getElementById(obj.id).style.backgroundSize = "80px 80px";
+    } else if (gewaehlteKarten === 1) {
+        kartenId2 = id;
+        karte2 = spielkartenRunde[newId];
+        document.getElementById(obj.id).style.background = "url('" + spielkartenRunde[newId] + "')";
+        document.getElementById(obj.id).style.backgroundSize = "80px 80px";
+        pruefe();
+    }
+}
+
+function pruefe() {
+    if (karte1 === karte2) {
+        gewaehlteKarten = 0;
+    } else {
+        gewaehlteKarten = 0;
+        for (i = 0; i < spielfeldFlaeche; i++) {
+            document.getElementById('karte' + i).onclick = "";
+        }
+        window.setTimeout(falscheSpielkartenVerdecken, 1500);
+    }
 }

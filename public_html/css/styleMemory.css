@@ -73,7 +73,7 @@ form {
         border-style: solid;
         border-color: coral;
         border-radius: 30px; 
-	margin:20px auto;
+	margin:20px auto;        
 }
 
 div#container > div{
@@ -87,20 +87,3 @@ div#container > div{
 	margin:10px;
 	cursor:pointer;
 }
-
-/*.vertical.flip-container {
-	position: relative;
-}*/
-
-	.back {
-		transform: rotateX(180deg);
-                background: url(../bilder/BildHintergrund.jpg) no-repeat;
-	}
-
-	.flipper {
-		transform-origin: 100% 213.5px; /* half of height */
-	}
-
-	.container:hover .flipper {
-		transform: rotateX(-180deg);
-	}
