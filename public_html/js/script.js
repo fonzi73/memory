@@ -15,6 +15,7 @@ var spielfeldFlaeche;
 var hirnVolumen;
 var hirnInhalt;
 var computerHirn = [];
+var entfernteSpielkarten = [];
 var spielkartenRunde = [];
 var spielkartenGesamt = [];
 for (i = 0; i < 32; i++) {
@@ -99,44 +100,46 @@ function falscheSpielkartenVerdecken() {
     document.getElementById(kartenId1).style.backgroundSize = "80px 80px";
     document.getElementById(kartenId2).style.background = "url('./bilder/BildHintergrund.jpg')";
     document.getElementById(kartenId2).style.backgroundSize = "80px 80px";
-    for (i = 0; i < spielfeldFlaeche; i++) {
-        document.getElementById('karte' + i).onclick = function () {
-            karteWaehlen(this);
-        };
-    }
+    kartenId1 = -1;
+    kartenId2 = -2;
+    onclickStart();
 }
 
 function karteWaehlen(obj) {
     var id = obj.id;
     var newId = id.slice(5);
-    if (gewaehlteKarten === 0) {
-        kartenId1 = id;
-        karte1 = spielkartenRunde[newId];
-        gewaehlteKarten += 1;
-        tauscheKarteImHirn(kartenId1, karte1);
-        document.getElementById(obj.id).style.background = "url('" + spielkartenRunde[newId] + "')";
-        document.getElementById(obj.id).style.backgroundSize = "80px 80px";
-    } else if (gewaehlteKarten === 1) {
-        kartenId2 = id;
-        karte2 = spielkartenRunde[newId];
-        tauscheKarteImHirn(kartenId2, karte2);
-        document.getElementById(obj.id).style.background = "url('" + spielkartenRunde[newId] + "')";
-        document.getElementById(obj.id).style.backgroundSize = "80px 80px";
-        pruefe();
+    if (kartenId1 !== id) {
+        if (gewaehlteKarten === 0) {
+            kartenId1 = id;
+            karte1 = spielkartenRunde[newId];
+            gewaehlteKarten += 1;
+            tauscheKarteImHirn(kartenId1, karte1);
+            document.getElementById(obj.id).style.background = "url('" + spielkartenRunde[newId] + "')";
+            document.getElementById(obj.id).style.backgroundSize = "80px 80px";
+        } else if (gewaehlteKarten === 1) {
+            for (i = 0; i < spielfeldFlaeche; i++) {
+                document.getElementById('karte' + i).onclick = "";
+            }
+            kartenId2 = id;
+            karte2 = spielkartenRunde[newId];
+            tauscheKarteImHirn(kartenId2, karte2);
+            document.getElementById(obj.id).style.background = "url('" + spielkartenRunde[newId] + "')";
+            document.getElementById(obj.id).style.backgroundSize = "80px 80px";
+            window.setTimeout(pruefe, 100);
+        }
     }
 }
 
 function pruefe() {
     if (karte1 === karte2) {
+        entfernteSpielkarten.push(kartenId1, kartenId2);
         loescheRichtigeKartenAusHirn();
         gewaehlteKarten = 0;
         spielLaufzeit--;
         laufzeitCheck();
+        window.setTimeout(kartenEntfernen, 250);
     } else {
         gewaehlteKarten = 0;
-        for (i = 0; i < spielfeldFlaeche; i++) {
-            document.getElementById('karte' + i).onclick = "";
-        }
         window.setTimeout(falscheSpielkartenVerdecken, 1500);
     }
 }
@@ -202,4 +205,36 @@ function spielerIstDran() {
             karteWaehlen(this);
         };
     }
+}
+
+function onclickStart() {
+    alert(entfernteSpielkarten);
+    var check = true;
+    for (i = 0; i < spielfeldFlaeche; i++) {
+        for (j = 0; j < entfernteSpielkarten.length; j++) {
+            if ("karte" + i === entfernteSpielkarten[j]) {
+                check = false;
+                break;
+            }
+        }
+        if (check === true) {
+            document.getElementById('karte' + i).onclick = function () {
+                karteWaehlen(this);
+            };
+        } else {
+            document.getElementById('karte' + i).onclick = "";
+            document.getElementById('karte' + i).style.cursor = "default";
+        }
+        check = true;
+    }
+}
+
+function kartenEntfernen() {
+    document.getElementById(kartenId1).style.background = "url('./bilder/BildTransparent.gif')";
+    document.getElementById(kartenId1).style.border = "none";
+    document.getElementById(kartenId2).style.background = "url('./bilder/BildTransparent.gif')";
+    document.getElementById(kartenId2).style.border = "none";
+    kartenId1 = -1;
+    kartenId2 = -2;
+    onclickStart();
 }
